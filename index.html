@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pomodoro Clock</title>
+		<link rel="stylesheet" href="./assets/reset.css" />
+		<link rel="stylesheet" href="./assets/index.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+		/>
+	</head>
+	<body class="bg-black text-white">
+		<main class="animate__animated animate__backInDown">
+			<h1 class="clock animate__backInLeft"></h1>
+			<footer>
+				<button id="start-btn" type="button" class="bg-green animate__animated">
+					Start
+				</button>
+				<button
+					id="pause-btn"
+					type="button"
+					class="bg-gray animate__animated hidden"
+				>
+					Pause
+				</button>
+				<button
+					id="break-btn"
+					type="button"
+					class="bg-red text-white animate__animated"
+				>
+					Break
+				</button>
+				<button
+					id="continue-btn"
+					type="button"
+					class="bg-yellow text-white animate__animated hidden"
+				>
+					Persevere
+				</button>
+			</footer>
+		</main>
+		<script src="./dist/index.js"></script>
+	</body>
+</html>
