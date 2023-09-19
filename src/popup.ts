@@ -1,3 +1,5 @@
+import Timer from './helpers/timer';
+
 (function () {
 	const startBtn: HTMLButtonElement = document.querySelector(
 		'#start-btn'
@@ -16,99 +18,59 @@
 		'body'
 	) as HTMLBodyElement;
 
-	const timer: HTMLHeadingElement = document.querySelector(
+	const timerEl: HTMLHeadingElement = document.querySelector(
 		'.clock'
 	) as HTMLHeadingElement;
 
-	const WORK_MIN = 25;
-	const CHILL_MIN = 5;
-	const SECONDS = 60;
+	const timer = new Timer(25, 60, timerEl);
 
-	let isBreakTime = false;
-	let seconds = SECONDS;
-	let minutes = WORK_MIN;
-	let timingInterval: number | undefined;
+	timer.renderTimer();
 
-	renderTimer(WORK_MIN, SECONDS);
-
-	startBtn.addEventListener('click', () => {
+	startBtn.addEventListener('click', async () => {
 		startBtn.classList.add('hidden');
 		pauseBtn.classList.remove('hidden');
 		pauseBtn.classList.add('animate__fadeInLeft');
-		startTimer();
+		timer.startTimer();
 	});
 
 	pauseBtn.addEventListener('click', () => {
 		pauseBtn.classList.add('hidden');
 		startBtn.classList.remove('hidden');
 		startBtn.classList.add('animate__fadeInLeft');
-		clearInterval(timingInterval);
+		timer.pauseTimer();
 	});
 
 	breakBtn.addEventListener('click', function () {
-		clearInterval(timingInterval);
-		switchTimer();
-		this.classList.add('hidden');
-		continueBtn.classList.remove('hidden');
-		continueBtn.classList.add('animate__fadeInRight');
-	});
-
-	continueBtn.addEventListener('click', function () {
-		clearInterval(timingInterval);
-		switchTimer();
-		this.classList.add('hidden');
-		breakBtn.classList.remove('hidden');
-		breakBtn.classList.add('animate__fadeInRight');
-	});
-
-	function renderTimer(min: number, sec: number) {
-		const minFormat = min < 10 ? `0${min}` : min;
-		const secFormat = sec < 10 ? `0${sec}` : sec;
-		if (sec === 60) {
-			timer.textContent = `${minFormat}:00`;
-			return;
-		}
-		timer.textContent = `${minFormat}:${secFormat}`;
-		return;
-	}
-
-	function startTimer() {
-		timingInterval = setInterval(() => {
-			if (minutes <= 0 && seconds <= 0) {
-				clearInterval(timingInterval);
-				switchTimer();
-				return;
-			}
-			if (seconds === 0) {
-				seconds = SECONDS;
-			}
-			if (seconds === 60) {
-				minutes--;
-			}
-			seconds--;
-			renderTimer(minutes, seconds);
-		}, 1000);
-	}
-
-	function switchTimer() {
-		isBreakTime = !isBreakTime;
-		if (isBreakTime) {
+		timer.pauseTimer();
+		timer.switchTimer();
+		console.log('Break time', timer.isBreakTime);
+		if (timer.isBreakTime) {
 			body.classList.remove('bg-black');
 			body.classList.add('bg-blue');
-			minutes = CHILL_MIN;
-			seconds = SECONDS;
 		} else {
 			body.classList.remove('bg-blue');
 			body.classList.add('bg-black');
-			minutes = WORK_MIN;
-			seconds = SECONDS;
 		}
+		this.classList.add('hidden');
+		continueBtn.classList.remove('hidden');
+		continueBtn.classList.add('animate__fadeInRight');
 
 		if (startBtn.classList.contains('hidden')) {
 			startBtn.classList.remove('hidden');
 			pauseBtn.classList.add('hidden');
 			startBtn.classList.add('animate__fadeInLeft');
 		}
-		renderTimer(minutes, seconds);
-	}
+	});
+
+	continueBtn.addEventListener('click', function () {
+		timer.pauseTimer();
+		timer.switchTimer();
+		if (!timer.isBreakTime) {
+			body.classList.remove('bg-blue');
+			body.classList.add('bg-black');
+		}
+		this.classList.add('hidden');
+		breakBtn.classList.remove('hidden');
+		breakBtn.classList.add('animate__fadeInRight');
+	});
 })();
