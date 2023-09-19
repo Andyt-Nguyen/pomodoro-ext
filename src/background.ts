@@ -1,4 +1,5 @@
-console.log("sup background listening sdlfj")
-chrome.action.onClicked.addListener(tab => {
-  console.log("TAB", tab)
-})
+chrome.storage.onChanged.addListener((changes, namespace) => {
+	console.log('Changes', changes);
+	console.log('namespace', namespace);
+});
+chrome.tabs.onUpdated.addListener((tabId, tab) => {});
