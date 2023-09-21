@@ -8,7 +8,11 @@ export default class Timer {
 	timingInterval;
 	isBreakTime;
 	renderEl;
-	constructor(minutes: number, seconds: number, renderEl: HTMLElement) {
+	constructor(
+		minutes: number = 25,
+		seconds: number = 0,
+		renderEl: HTMLElement
+	) {
 		this.minutes = minutes;
 		this.seconds = seconds;
 		this.timingInterval = 0;
@@ -18,15 +22,15 @@ export default class Timer {
 
 	startTimer() {
 		this.timingInterval = setInterval(() => {
-			if (this.minutes <= 0 && this.seconds <= 0) {
+			if ((this.minutes <= 0 && this.seconds <= 0)) {
 				clearInterval(this.timingInterval);
 				this.switchTimer();
 				return;
 			}
-			if (this.seconds === 0) {
+			if (this.seconds <= 0) {
 				this.seconds = MAX_SECONDS;
 			}
-			if (this.seconds === MAX_SECONDS) {
+			if (this.seconds >= MAX_SECONDS) {
 				this.minutes--;
 			}
 			this.seconds--;
@@ -54,7 +58,6 @@ export default class Timer {
 		const minFormat = this.minutes < 10 ? `0${this.minutes}` : this.minutes;
 		const secFormat = this.seconds < 10 ? `0${this.seconds}` : this.seconds;
 
-		console.log('THIS', this.seconds);
 		if (this.seconds === MAX_SECONDS) {
 			this.renderEl.innerText = `${minFormat}:00`;
 			return;
