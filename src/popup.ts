@@ -31,6 +31,8 @@ import Timer from './helpers/timer';
 		pauseBtn.classList.remove('hidden');
 		pauseBtn.classList.add('animate__fadeInLeft');
 		timer.startTimer();
+
+		chrome.storage.local.set({ timeStarted: new Date().getTime() / 1000 });
 	});
 
 	pauseBtn.addEventListener('click', () => {
