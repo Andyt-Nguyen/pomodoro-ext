@@ -1,14 +1,39 @@
-(function () {
-	console.log('COnTENT scrip loaded');
+import Timer from './helpers/timer';
+
+(async function () {
+	/* Body Tag */
 	const bodyTag: HTMLBodyElement = document.querySelector(
 		'body'
 	) as HTMLBodyElement;
-
+	/* Head Tag */
 	const headTag: HTMLHeadElement = document.querySelector(
 		'head'
 	) as HTMLHeadElement;
+	/* Container Div */
+	const container: HTMLDivElement = document.createElement('div');
+	/* Timer Div */
+	const timerDiv: HTMLDivElement = document.createElement('div');
+	setupHtml();
 
-	const cssStyleSheet = `
+	const timer: Timer = new Timer(1, 1, timerDiv);
+	timer.startTimer();
+
+	// opens on existing tabs
+	chrome.runtime.onMessage.addListener(function (request) {
+		console.log('REQUEST', request);
+		timer.minutes = request.minutes;
+		timer.seconds = request.seconds;
+		renderTimer();
+	});
+
+	function renderTimer() {
+		container.classList.remove('hidden');
+		container.classList.add('__timer-container');
+		container.classList.add('animate__animated');
+		container.classList.add('animate__bounceInRight');
+	}
+	function setupHtml() {
+		const cssStyleSheet = `
 		.__timer-container {
 			position: fixed;
 			bottom: 0;
@@ -48,56 +73,25 @@
 		}
 	`;
 
-	let minutes = 25;
-	let seconds = 60;
+		container.classList.add('hidden');
 
-	const container: HTMLDivElement = document.createElement('div');
-	container.classList.add('hidden');
+		timerDiv.classList.add('timer');
+		container.appendChild(timerDiv);
 
-	const timerDiv: HTMLDivElement = document.createElement('div');
-	timerDiv.classList.add('timer');
-	timerDiv.innerText = `${minutes}:${seconds}`;
-	container.appendChild(timerDiv);
+		const wrapper = document.createElement('div');
+		const styleTag = document.createElement('style');
+		styleTag.innerHTML = cssStyleSheet;
 
-	const wrapper = document.createElement('div');
-	const styleTag = document.createElement('style');
-	styleTag.innerHTML = cssStyleSheet;
+		const animateCssLibrary =
+			'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css';
 
-	const animateCssLibrary =
-		'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css';
+		const animateCssLink = document.createElement('link');
+		animateCssLink.setAttribute('rel', 'stylesheet');
+		animateCssLink.setAttribute('href', animateCssLibrary);
 
-	const animateCssLink = document.createElement('link');
-	animateCssLink.setAttribute('rel', 'stylesheet');
-	animateCssLink.setAttribute('href', animateCssLibrary);
-
-	headTag.appendChild(styleTag);
-	headTag.appendChild(animateCssLink);
-	wrapper.appendChild(container);
-	bodyTag.appendChild(wrapper);
-
-	chrome.runtime.onMessage.addListener(function (
-		request,
-		sender,
-		sendResponse
-	) {
-		console.log('REQUEST', request);
-		if (request.timerStarted) {
-			const currDate = new Date();
-			const timePassed: number =
-				(currDate.getTime() - new Date(request.currDate).getTime()) / 1000;
-
-			console.log(timePassed);
-			// setInterval(() => {
-			// 	minutes--;
-			// 	console.log('MINUTES', minutes);
-			// }, 1000);
-			container.classList.remove('hidden');
-			container.classList.add('__timer-container');
-			container.classList.add('animate__animated');
-			container.classList.add('animate__bounceInRight');
-		}
-		// console.log('REQUEST', request.timeStarted);
-		// if (request.greeting === "hello")
-		// 	sendResponse({farewell: "goodbye"});
-	});
+		headTag.appendChild(styleTag);
+		headTag.appendChild(animateCssLink);
+		wrapper.appendChild(container);
+		bodyTag.appendChild(wrapper);
+	}
 })();
